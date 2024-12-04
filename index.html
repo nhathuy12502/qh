@@ -1,0 +1,2319 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
+        <link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title>jhbhjbbjjbhhhj</title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/L.Control.Layers.Tree.min.js"></script>
+        <script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/multi-style-layer.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="data/QH2030_QHTONG_1.js"></script>
+        <script src="data/QH2030_TONG_2.js"></script>
+        <script src="data/SDD_3.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:false, maxZoom:28, minZoom:1
+        })
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        // remove popup's row if "visible-with-data"
+        function removeEmptyRowsFromPopupContent(content, feature) {
+         var tempDiv = document.createElement('div');
+         tempDiv.innerHTML = content;
+         var rows = tempDiv.querySelectorAll('tr');
+         for (var i = 0; i < rows.length; i++) {
+             var td = rows[i].querySelector('td.visible-with-data');
+             var key = td ? td.id : '';
+             if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
+                 rows[i].parentNode.removeChild(rows[i]);
+             }
+         }
+         return tempDiv.innerHTML;
+        }
+        // add class to format popup if it contains media
+		function addClassToPopupIfMedia(content, popup) {
+			var tempDiv = document.createElement('div');
+			tempDiv.innerHTML = content;
+			if (tempDiv.querySelector('td img')) {
+				popup._contentNode.classList.add('media');
+					// Delay to force the redraw
+					setTimeout(function() {
+						popup.update();
+					}, 10);
+			} else {
+				popup._contentNode.classList.remove('media');
+			}
+		}
+        var title = new L.Control({'position':'topright'});
+        title.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info');
+            this.update();
+            return this._div;
+        };
+        title.update = function () {
+            this._div.innerHTML = '<h2>jhbhjbbjjbhhhj</h2>';
+        };
+        title.addTo(map);
+        var abstract = new L.Control({'position':'topright'});
+        abstract.onAdd = function (map) {
+            this._div = L.DomUtil.create('div',
+            'leaflet-control abstract');
+            this._div.id = 'abstract'
+
+                abstract.show();
+                return this._div;
+            };
+            abstract.show = function () {
+                this._div.classList.remove("abstract");
+                this._div.classList.add("abstractUncollapsed");
+                this._div.innerHTML = 'hbjbhjbhjbbjhhjbhjhbjbhjkjjh<br />jhvhghgvgvvgh';
+        };
+        abstract.addTo(map);
+        var zoomControl = L.control.zoom({
+            position: 'topleft'
+        }).addTo(map);
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0].innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0].className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
+        }
+        map.createPane('pane_GlobalMonthly_0');
+        map.getPane('pane_GlobalMonthly_0').style.zIndex = 400;
+        var layer_GlobalMonthly_0 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2024_01_mosaic/gmap/{z}/{x}/{y}.png?api_key=PLAKa0997321bfab4084a3bbd1107a8548aa', {
+            pane: 'pane_GlobalMonthly_0',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 22
+        });
+        layer_GlobalMonthly_0;
+        map.addLayer(layer_GlobalMonthly_0);
+        function pop_QH2030_QHTONG_1(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td class="visible-with-data" id="maloai_qh"colspan="2"><strong>Mã loại quy hoạch</strong><br />' + (feature.properties['maloai_qh'] !== null ? autolinker.link(feature.properties['maloai_qh'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="tenloai_qh"colspan="2"><strong>Tên loại quy hoạch</strong><br />' + (feature.properties['tenloai_qh'] !== null ? autolinker.link(feature.properties['tenloai_qh'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="dientich"colspan="2"><strong>Diện tích</strong><br />' + (feature.properties['dientich'] !== null ? autolinker.link(feature.properties['dientich'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="QH"colspan="2"><strong>Quy hoạch</strong><br />' + (feature.properties['QH'] !== null ? autolinker.link(feature.properties['QH'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        var pattern_QH2030_QHTONG_1_0 = new L.StripePattern({
+            weight: 0.3,
+            spaceWeight: 2.0,
+            color: '#e41a1c',
+            opacity: 0.3,
+            spaceOpacity: 0,
+            angle: 315
+        });
+        pattern_QH2030_QHTONG_1_0.addTo(map);
+        var pattern_QH2030_QHTONG_1_0 = new L.StripePattern({
+            weight: 0.3,
+            spaceWeight: 2.0,
+            color: '#e41a1c',
+            opacity: 0.3,
+            spaceOpacity: 0,
+            angle: 315
+        });
+        pattern_QH2030_QHTONG_1_0.addTo(map);
+        function style_QH2030_QHTONG_1_0(feature) {
+            switch(String(feature.properties['tenloai_qh'])) {
+                case 'Đất bãi thải, xử lí chất thải':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(205,170,205,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất chợ':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất có di tích lịch sử - văn hóa':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất có mặt nước chuyên dùng':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(180,255,255,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất có mục đích công cộng':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất cơ sở sản xuất phi nông nghiệp':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(250,170,160,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất cơ sở tôn giáo':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất công trình bưu chính viễn thông':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất công trình năng lượng':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất danh lam thắng cảnh':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất giao thông':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,127,50,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất khu công nghiệp':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(250,170,160,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất khu vui chơi, giải trí công cộng':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất nghĩa trang, nghĩa địa, nhà tang lễ, nhà hỏa táng':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(210,210,210,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất nông nghiệp khác':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(245,255,180,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất nuôi trồng thủy sản':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(170,255,255,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đât ở đô thị':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,160,255,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất ở đô thị':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,160,255,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất ở nông thôn':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,208,255,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất phi nông nghiệp khác':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất quốc phòng':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,100,80,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất sản xuất vật liệu xây dựng, làm đồ gốm':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(205,170,205,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất sản xuất, kinh doanh phi nông nghiệp':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất sinh hoạt cộng đồng':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất sông, ngòi, kênh, rạch, suối':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(160,255,255,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất thương mại, dịch vụ':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(250,170,160,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất thủy lợi':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(170,255,255,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất trồng cây lâu năm':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,210,160,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng cơ sở giáo dục và đào tạo':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng cơ sở thể dục thể thao':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng cơ sở văn hóa':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng cơ sở y tế':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng trụ sở cơ quan':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.3)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng trụ sở của tổ chức sự nghiệp':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.3)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(250,170,160,0.3)',
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                stroke: false,
+                fillOpacity: 1,
+                fillPattern: pattern_QH2030_QHTONG_1_0,
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        function style_QH2030_QHTONG_1_1(feature) {
+            switch(String(feature.properties['tenloai_qh'])) {
+                case 'Đất bãi thải, xử lí chất thải':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất chợ':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất có di tích lịch sử - văn hóa':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất có mặt nước chuyên dùng':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất có mục đích công cộng':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất cơ sở sản xuất phi nông nghiệp':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất cơ sở tôn giáo':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất công trình bưu chính viễn thông':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất công trình năng lượng':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất danh lam thắng cảnh':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất giao thông':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất khu công nghiệp':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất khu vui chơi, giải trí công cộng':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất nghĩa trang, nghĩa địa, nhà tang lễ, nhà hỏa táng':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất nông nghiệp khác':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất nuôi trồng thủy sản':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đât ở đô thị':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất ở đô thị':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất ở nông thôn':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất phi nông nghiệp khác':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất quốc phòng':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất sản xuất vật liệu xây dựng, làm đồ gốm':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất sản xuất, kinh doanh phi nông nghiệp':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất sinh hoạt cộng đồng':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất sông, ngòi, kênh, rạch, suối':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất thương mại, dịch vụ':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất thủy lợi':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất trồng cây lâu năm':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng cơ sở giáo dục và đào tạo':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng cơ sở thể dục thể thao':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng cơ sở văn hóa':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng cơ sở y tế':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng trụ sở cơ quan':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng trụ sở của tổ chức sự nghiệp':
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_QH2030_QHTONG_1',
+                opacity: 1,
+                color: 'rgba(228,26,28,0.3)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_QH2030_QHTONG_1');
+        map.getPane('pane_QH2030_QHTONG_1').style.zIndex = 401;
+        map.getPane('pane_QH2030_QHTONG_1').style['mix-blend-mode'] = 'normal';
+        var layer_QH2030_QHTONG_1 = new L.geoJson.multiStyle(json_QH2030_QHTONG_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_QH2030_QHTONG_1',
+            layerName: 'layer_QH2030_QHTONG_1',
+            pane: 'pane_QH2030_QHTONG_1',
+            onEachFeature: pop_QH2030_QHTONG_1,
+            styles: [style_QH2030_QHTONG_1_0,style_QH2030_QHTONG_1_1,]
+        });
+        bounds_group.addLayer(layer_QH2030_QHTONG_1);
+        map.addLayer(layer_QH2030_QHTONG_1);
+        function pop_QH2030_TONG_2(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Mã loại quy hoạch</th>\
+                        <td>' + (feature.properties['maloai_qh'] !== null ? autolinker.link(feature.properties['maloai_qh'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Tên loại quy hoạch</th>\
+                        <td>' + (feature.properties['tenloai_qh'] !== null ? autolinker.link(feature.properties['tenloai_qh'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Diện tích</th>\
+                        <td>' + (feature.properties['dientich'] !== null ? autolinker.link(feature.properties['dientich'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Quy hoạch</th>\
+                        <td>' + (feature.properties['QH'] !== null ? autolinker.link(feature.properties['QH'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        var pattern_QH2030_TONG_2_0 = new L.StripePattern({
+            weight: 0.3,
+            spaceWeight: 2.0,
+            color: '#e41a1c',
+            opacity: 0.409,
+            spaceOpacity: 0,
+            angle: 315
+        });
+        pattern_QH2030_TONG_2_0.addTo(map);
+        var pattern_QH2030_TONG_2_0 = new L.StripePattern({
+            weight: 0.3,
+            spaceWeight: 2.0,
+            color: '#e41a1c',
+            opacity: 0.409,
+            spaceOpacity: 0,
+            angle: 315
+        });
+        pattern_QH2030_TONG_2_0.addTo(map);
+        function style_QH2030_TONG_2_0(feature) {
+            switch(String(feature.properties['tenloai_qh'])) {
+                case 'Đất bãi thải, xử lí chất thải':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(205,170,205,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất chợ':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất có di tích lịch sử - văn hóa':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất có mặt nước chuyên dùng':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(180,255,255,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất có mục đích công cộng':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất cơ sở sản xuất phi nông nghiệp':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(250,170,160,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất cơ sở tôn giáo':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất công trình bưu chính viễn thông':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất công trình năng lượng':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất danh lam thắng cảnh':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất giao thông':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,127,50,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất khu công nghiệp':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(250,170,160,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất khu vui chơi, giải trí công cộng':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất nghĩa trang, nghĩa địa, nhà tang lễ, nhà hỏa táng':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(210,210,210,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất nông nghiệp khác':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(245,255,180,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất nuôi trồng thủy sản':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(170,255,255,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đât ở đô thị':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,160,255,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất ở đô thị':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,160,255,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất ở nông thôn':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,208,255,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất phi nông nghiệp khác':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất quốc phòng':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,100,80,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất sản xuất vật liệu xây dựng, làm đồ gốm':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(205,170,205,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất sản xuất, kinh doanh phi nông nghiệp':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất sinh hoạt cộng đồng':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất sông, ngòi, kênh, rạch, suối':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(160,255,255,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất thương mại, dịch vụ':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(250,170,160,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất thủy lợi':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(170,255,255,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất trồng cây lâu năm':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,210,160,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng cơ sở giáo dục và đào tạo':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng cơ sở thể dục thể thao':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng cơ sở văn hóa':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng cơ sở y tế':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng trụ sở cơ quan':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.409)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng trụ sở của tổ chức sự nghiệp':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.409)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(250,170,160,0.409)',
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                stroke: false,
+                fillOpacity: 1,
+                fillPattern: pattern_QH2030_TONG_2_0,
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        function style_QH2030_TONG_2_1(feature) {
+            switch(String(feature.properties['tenloai_qh'])) {
+                case 'Đất bãi thải, xử lí chất thải':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất chợ':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất có di tích lịch sử - văn hóa':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất có mặt nước chuyên dùng':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất có mục đích công cộng':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất cơ sở sản xuất phi nông nghiệp':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất cơ sở tôn giáo':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất công trình bưu chính viễn thông':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất công trình năng lượng':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất danh lam thắng cảnh':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất giao thông':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất khu công nghiệp':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất khu vui chơi, giải trí công cộng':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất nghĩa trang, nghĩa địa, nhà tang lễ, nhà hỏa táng':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất nông nghiệp khác':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất nuôi trồng thủy sản':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đât ở đô thị':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất ở đô thị':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất ở nông thôn':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất phi nông nghiệp khác':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất quốc phòng':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất sản xuất vật liệu xây dựng, làm đồ gốm':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất sản xuất, kinh doanh phi nông nghiệp':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất sinh hoạt cộng đồng':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất sông, ngòi, kênh, rạch, suối':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất thương mại, dịch vụ':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất thủy lợi':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất trồng cây lâu năm':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng cơ sở giáo dục và đào tạo':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng cơ sở thể dục thể thao':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng cơ sở văn hóa':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng cơ sở y tế':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng trụ sở cơ quan':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng trụ sở của tổ chức sự nghiệp':
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_QH2030_TONG_2',
+                opacity: 1,
+                color: 'rgba(228,26,28,0.409)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_QH2030_TONG_2');
+        map.getPane('pane_QH2030_TONG_2').style.zIndex = 402;
+        map.getPane('pane_QH2030_TONG_2').style['mix-blend-mode'] = 'normal';
+        var layer_QH2030_TONG_2 = new L.geoJson.multiStyle(json_QH2030_TONG_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_QH2030_TONG_2',
+            layerName: 'layer_QH2030_TONG_2',
+            pane: 'pane_QH2030_TONG_2',
+            onEachFeature: pop_QH2030_TONG_2,
+            styles: [style_QH2030_TONG_2_0,style_QH2030_TONG_2_1,]
+        });
+        bounds_group.addLayer(layer_QH2030_TONG_2);
+        map.addLayer(layer_QH2030_TONG_2);
+        function pop_SDD_3(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">madat</th>\
+                        <td>' + (feature.properties['madat'] !== null ? autolinker.link(feature.properties['madat'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">loaidat</th>\
+                        <td>' + (feature.properties['loaidat'] !== null ? autolinker.link(feature.properties['loaidat'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">dientich</th>\
+                        <td>' + (feature.properties['dientich'] !== null ? autolinker.link(feature.properties['dientich'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_SDD_3_0(feature) {
+            switch(String(feature.properties['loaidat'])) {
+                default:
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(69,186,221,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất an ninh':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,80,70,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất bãi thải, xử lí chất thải':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(205,70,205,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất bằng trồng cây hàng năm khác':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,240,180,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất chợ':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất chưa sử dụng':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,254,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất có mặt nước chuyên dùng':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(180,255,255,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất cơ sở sản xuất phi nông nghiệp':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(250,170,160,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất cơ sở tín ngưỡng':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất cơ sở tôn giáo':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất công trình bưu chính viễn thông':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất công trình năng lượng':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất giao thông':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,50,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất khu vui chơi, giải trí công cộng':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất nghĩa trang, nghĩa địa, nhà tang lễ, nhà hỏa táng':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(210,210,210,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất nông nghiệp khác':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(245,255,180,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất nuôi trồng thủy sản':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(170,255,255,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất ở đô thị':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,160,255,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất ở nông thôn':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,208,255,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất phi nông nghiệp khác':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất quốc phòng':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,100,80,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất sản xuất vật liệu xây dựng, làm đồ gốm':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(205,170,205,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất sinh hoạt cộng đồng':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất sông, ngòi, kênh, rạch, suối':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(160,255,255,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất thương mại, dịch vụ':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(250,170,160,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất thủy lợi':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(170,255,255,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất trồng cây lâu năm':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,210,160,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất trồng lúa nước còn lại':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,252,150,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng cơ sở giáo dục và đào tạo':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng cơ sở thể dục thể thao':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng cơ sở văn hóa':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng cơ sở y tế':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng trụ sở cơ quan':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,170,160,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất xây dựng trụ sở của tổ chức sự nghiệp':
+                    return {
+                pane: 'pane_SDD_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.40299999999999997)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(250,170,160,0.40299999999999997)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_SDD_3');
+        map.getPane('pane_SDD_3').style.zIndex = 403;
+        map.getPane('pane_SDD_3').style['mix-blend-mode'] = 'normal';
+        var layer_SDD_3 = new L.geoJson(json_SDD_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_SDD_3',
+            layerName: 'layer_SDD_3',
+            pane: 'pane_SDD_3',
+            onEachFeature: pop_SDD_3,
+            style: style_SDD_3_0,
+        });
+        bounds_group.addLayer(layer_SDD_3);
+        map.addLayer(layer_SDD_3);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var baseMaps = {};
+        var overlaysTree = [
+        {label: '<b>Group 3</b>', selectAllCheckbox: true, children: [
+            {label: 'SDD<br /><table><tr><td style="text-align: center;"><img src="legend/SDD_3_0.png" /></td><td></td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtanninh1.png" /></td><td>Đất an ninh</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtbãithảixửlíchấtthải2.png" /></td><td>Đất bãi thải, xử lí chất thải</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtbằngtrồngcâyhàngnămkhác3.png" /></td><td>Đất bằng trồng cây hàng năm khác</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtchợ4.png" /></td><td>Đất chợ</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtchưasửdụng5.png" /></td><td>Đất chưa sử dụng</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtcómặtnướcchuyêndùng6.png" /></td><td>Đất có mặt nước chuyên dùng</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtcơsởsảnxuấtphinôngnghiệp7.png" /></td><td>Đất cơ sở sản xuất phi nông nghiệp</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtcơsởtínngưỡng8.png" /></td><td>Đất cơ sở tín ngưỡng</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtcơsởtôngiáo9.png" /></td><td>Đất cơ sở tôn giáo</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtcôngtrìnhbưuchínhviễnthông10.png" /></td><td>Đất công trình bưu chính viễn thông</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtcôngtrìnhnănglượng11.png" /></td><td>Đất công trình năng lượng</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtgiaothông12.png" /></td><td>Đất giao thông</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtkhuvuichơigiảitrícôngcộng13.png" /></td><td>Đất khu vui chơi, giải trí công cộng</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtnghĩatrangnghĩađịanhàtanglễnhàhỏatáng14.png" /></td><td>Đất nghĩa trang, nghĩa địa, nhà tang lễ, nhà hỏa táng</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtnôngnghiệpkhác15.png" /></td><td>Đất nông nghiệp khác</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtnuôitrồngthủysản16.png" /></td><td>Đất nuôi trồng thủy sản</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtởđôthị17.png" /></td><td>Đất ở đô thị</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtởnôngthôn18.png" /></td><td>Đất ở nông thôn</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtphinôngnghiệpkhác19.png" /></td><td>Đất phi nông nghiệp khác</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtquốcphòng20.png" /></td><td>Đất quốc phòng</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtsảnxuấtvậtliệuxâydựnglàmđồgốm21.png" /></td><td>Đất sản xuất vật liệu xây dựng, làm đồ gốm</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtsinhhoạtcộngđồng22.png" /></td><td>Đất sinh hoạt cộng đồng</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtsôngngòikênhrạchsuối23.png" /></td><td>Đất sông, ngòi, kênh, rạch, suối</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtthươngmạidịchvụ24.png" /></td><td>Đất thương mại, dịch vụ</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtthủylợi25.png" /></td><td>Đất thủy lợi</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấttrồngcâylâunăm26.png" /></td><td>Đất trồng cây lâu năm</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấttrồnglúanướccònlại27.png" /></td><td>Đất trồng lúa nước còn lại</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtxâydựngcơsởgiáodụcvàđàotạo28.png" /></td><td>Đất xây dựng cơ sở giáo dục và đào tạo</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtxâydựngcơsởthểdụcthểthao29.png" /></td><td>Đất xây dựng cơ sở thể dục thể thao</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtxâydựngcơsởvănhóa30.png" /></td><td>Đất xây dựng cơ sở văn hóa</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtxâydựngcơsởytế31.png" /></td><td>Đất xây dựng cơ sở y tế</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtxâydựngtrụsởcơquan32.png" /></td><td>Đất xây dựng trụ sở cơ quan</td></tr><tr><td style="text-align: center;"><img src="legend/SDD_3_Đấtxâydựngtrụsởcủatổchứcsựnghiệp33.png" /></td><td>Đất xây dựng trụ sở của tổ chức sự nghiệp</td></tr></table>', layer: layer_SDD_3},
+            {label: 'QH2030_TONG<br /><table><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtbãithảixửlíchấtthải0.png" /></td><td>Đất bãi thải, xử lí chất thải</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtchợ1.png" /></td><td>Đất chợ</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtcóditíchlịchsửvănhóa2.png" /></td><td>Đất có di tích lịch sử - văn hóa</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtcómặtnướcchuyêndùng3.png" /></td><td>Đất có mặt nước chuyên dùng</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtcómụcđíchcôngcộng4.png" /></td><td>Đất có mục đích công cộng</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtcơsởsảnxuấtphinôngnghiệp5.png" /></td><td>Đất cơ sở sản xuất phi nông nghiệp</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtcơsởtôngiáo6.png" /></td><td>Đất cơ sở tôn giáo</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtcôngtrìnhbưuchínhviễnthông7.png" /></td><td>Đất công trình bưu chính viễn thông</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtcôngtrìnhnănglượng8.png" /></td><td>Đất công trình năng lượng</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtdanhlamthắngcảnh9.png" /></td><td>Đất danh lam thắng cảnh</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtgiaothông10.png" /></td><td>Đất giao thông</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtkhucôngnghiệp11.png" /></td><td>Đất khu công nghiệp</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtkhuvuichơigiảitrícôngcộng12.png" /></td><td>Đất khu vui chơi, giải trí công cộng</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtnghĩatrangnghĩađịanhàtanglễnhàhỏatáng13.png" /></td><td>Đất nghĩa trang, nghĩa địa, nhà tang lễ, nhà hỏa táng</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtnôngnghiệpkhác14.png" /></td><td>Đất nông nghiệp khác</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtnuôitrồngthủysản15.png" /></td><td>Đất nuôi trồng thủy sản</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đâtởđôthị16.png" /></td><td>Đât ở đô thị</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtởđôthị17.png" /></td><td>Đất ở đô thị</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtởnôngthôn18.png" /></td><td>Đất ở nông thôn</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtphinôngnghiệpkhác19.png" /></td><td>Đất phi nông nghiệp khác</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtquốcphòng20.png" /></td><td>Đất quốc phòng</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtsảnxuấtvậtliệuxâydựnglàmđồgốm21.png" /></td><td>Đất sản xuất vật liệu xây dựng, làm đồ gốm</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtsảnxuấtkinhdoanhphinôngnghiệp22.png" /></td><td>Đất sản xuất, kinh doanh phi nông nghiệp</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtsinhhoạtcộngđồng23.png" /></td><td>Đất sinh hoạt cộng đồng</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtsôngngòikênhrạchsuối24.png" /></td><td>Đất sông, ngòi, kênh, rạch, suối</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtthươngmạidịchvụ25.png" /></td><td>Đất thương mại, dịch vụ</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtthủylợi26.png" /></td><td>Đất thủy lợi</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấttrồngcâylâunăm27.png" /></td><td>Đất trồng cây lâu năm</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtxâydựngcơsởgiáodụcvàđàotạo28.png" /></td><td>Đất xây dựng cơ sở giáo dục và đào tạo</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtxâydựngcơsởthểdụcthểthao29.png" /></td><td>Đất xây dựng cơ sở thể dục thể thao</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtxâydựngcơsởvănhóa30.png" /></td><td>Đất xây dựng cơ sở văn hóa</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtxâydựngcơsởytế31.png" /></td><td>Đất xây dựng cơ sở y tế</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtxâydựngtrụsởcơquan32.png" /></td><td>Đất xây dựng trụ sở cơ quan</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_Đấtxâydựngtrụsởcủatổchứcsựnghiệp33.png" /></td><td>Đất xây dựng trụ sở của tổ chức sự nghiệp</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_TONG_2_34.png" /></td><td></td></tr></table>', layer: layer_QH2030_TONG_2},
+            {label: 'QH2030_QHTONG<br /><table><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtbãithảixửlíchấtthải0.png" /></td><td>Đất bãi thải, xử lí chất thải</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtchợ1.png" /></td><td>Đất chợ</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtcóditíchlịchsửvănhóa2.png" /></td><td>Đất có di tích lịch sử - văn hóa</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtcómặtnướcchuyêndùng3.png" /></td><td>Đất có mặt nước chuyên dùng</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtcómụcđíchcôngcộng4.png" /></td><td>Đất có mục đích công cộng</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtcơsởsảnxuấtphinôngnghiệp5.png" /></td><td>Đất cơ sở sản xuất phi nông nghiệp</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtcơsởtôngiáo6.png" /></td><td>Đất cơ sở tôn giáo</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtcôngtrìnhbưuchínhviễnthông7.png" /></td><td>Đất công trình bưu chính viễn thông</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtcôngtrìnhnănglượng8.png" /></td><td>Đất công trình năng lượng</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtdanhlamthắngcảnh9.png" /></td><td>Đất danh lam thắng cảnh</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtgiaothông10.png" /></td><td>Đất giao thông</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtkhucôngnghiệp11.png" /></td><td>Đất khu công nghiệp</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtkhuvuichơigiảitrícôngcộng12.png" /></td><td>Đất khu vui chơi, giải trí công cộng</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtnghĩatrangnghĩađịanhàtanglễnhàhỏatáng13.png" /></td><td>Đất nghĩa trang, nghĩa địa, nhà tang lễ, nhà hỏa táng</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtnôngnghiệpkhác14.png" /></td><td>Đất nông nghiệp khác</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtnuôitrồngthủysản15.png" /></td><td>Đất nuôi trồng thủy sản</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đâtởđôthị16.png" /></td><td>Đât ở đô thị</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtởđôthị17.png" /></td><td>Đất ở đô thị</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtởnôngthôn18.png" /></td><td>Đất ở nông thôn</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtphinôngnghiệpkhác19.png" /></td><td>Đất phi nông nghiệp khác</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtquốcphòng20.png" /></td><td>Đất quốc phòng</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtsảnxuấtvậtliệuxâydựnglàmđồgốm21.png" /></td><td>Đất sản xuất vật liệu xây dựng, làm đồ gốm</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtsảnxuấtkinhdoanhphinôngnghiệp22.png" /></td><td>Đất sản xuất, kinh doanh phi nông nghiệp</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtsinhhoạtcộngđồng23.png" /></td><td>Đất sinh hoạt cộng đồng</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtsôngngòikênhrạchsuối24.png" /></td><td>Đất sông, ngòi, kênh, rạch, suối</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtthươngmạidịchvụ25.png" /></td><td>Đất thương mại, dịch vụ</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtthủylợi26.png" /></td><td>Đất thủy lợi</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấttrồngcâylâunăm27.png" /></td><td>Đất trồng cây lâu năm</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtxâydựngcơsởgiáodụcvàđàotạo28.png" /></td><td>Đất xây dựng cơ sở giáo dục và đào tạo</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtxâydựngcơsởthểdụcthểthao29.png" /></td><td>Đất xây dựng cơ sở thể dục thể thao</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtxâydựngcơsởvănhóa30.png" /></td><td>Đất xây dựng cơ sở văn hóa</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtxâydựngcơsởytế31.png" /></td><td>Đất xây dựng cơ sở y tế</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtxâydựngtrụsởcơquan32.png" /></td><td>Đất xây dựng trụ sở cơ quan</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_Đấtxâydựngtrụsởcủatổchứcsựnghiệp33.png" /></td><td>Đất xây dựng trụ sở của tổ chức sự nghiệp</td></tr><tr><td style="text-align: center;"><img src="legend/QH2030_QHTONG_1_34.png" /></td><td></td></tr></table>', layer: layer_QH2030_QHTONG_1},
+            {label: "Global Monthly", layer: layer_GlobalMonthly_0},]},]
+        var lay = L.control.layers.tree(null, overlaysTree,{
+            //namedToggle: true,
+            //selectorBack: false,
+            //closedSymbol: '&#8862; &#x1f5c0;',
+            //openedSymbol: '&#8863; &#x1f5c1;',
+            //collapseAll: 'Collapse all',
+            //expandAll: 'Expand all',
+            collapsed: true,
+        });
+        lay.addTo(map);
+        setBounds();
+        </script>
+    </body>
+</html>
